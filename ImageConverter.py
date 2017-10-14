@@ -1,6 +1,5 @@
 from os import system, rename, listdir, path, makedirs
 from shutil import move
-import Image
 
 """
 This class edits file names and their extensions, and moves the 
@@ -48,6 +47,20 @@ class ConvertFiles:
                         self.currentFileFormat = "jpg"
                     elif fileName.endswith(".png"):
                         self.currentFileFormat = "png"
+                    elif fileName.endswith(".gif"):
+                        self.currentFileFormat = "gif"
+                    elif fileName.endswith(".raw"):
+                        self.currentFileFormat = "raw"
+                    elif fileName.endswith(".gray"):
+                        self.currentFileFormat = "gray"
+                    elif fileName.endswith(".tiff"):
+                        self.currentFileFormat = "tiff"
+                    elif fileName.endswith(".bmp"):
+                        self.currentFileFormat = "bmp"
+                    elif fileName.endswith(".ico"):
+                        self.currentFileFormat = "ico"
+                    else:
+                        raw_input("Your images are in an unsupported format...")
 
                     if not self.identifiedFiles:
                         print("Identified files to edit...")
@@ -65,7 +78,7 @@ class ConvertFiles:
 
     def changeFileTypes(self):
         print("Converting files to the " + self.fileFormat + " image format.")
-        # Calling the `mogrify` command from ImageMagick (http://imagemagick.org/script/index.php) to convert the images.
+        # Calling the `magick convert` command from ImageMagick (http://imagemagick.org/script/index.php) to convert the images.
         for fileName in self.oldFilesList:
             self.newFileName = fileName.replace(self.currentFileFormat, self.fileFormat)
             callString = "magick convert " + fileName + " " + self.newFileName
