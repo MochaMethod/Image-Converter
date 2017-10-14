@@ -1,11 +1,12 @@
 from os import system, rename, listdir, path, makedirs
 from shutil import move
+import Image
 
 """
 This class edits file names and their extensions, and moves the 
 unchanged files to a seperate folder. 
 """
-class ImageConverter:
+class ConvertFiles:
     """
     Args:
         prefix (str): The text needed to idetify the files the user wants changed. 
@@ -26,6 +27,8 @@ class ImageConverter:
 
         self.newFileName = None
 
+        self.currentFileFormat = None
+
         self.changeFileNames()
         self.changeFileTypes()
         self.moveFiles()
@@ -39,6 +42,13 @@ class ImageConverter:
             # Check for files, that contain the `prefix` string, inside of the current folder.
             for fileName in listdir("."):
                 if fileName.startswith(self.prefix):
+                    if fileName.endswith(".jpeg"):
+                        self.currentFileFormat = "jpeg"
+                    elif fileName.endswith(".jpg"):
+                        self.currentFileFormat = "jpg"
+                    elif fileName.endswith(".png"):
+                        self.currentFileFormat = "png"
+
                     if not self.identifiedFiles:
                         print("Identified files to edit...")
                         self.identifiedFiles = True
@@ -56,8 +66,12 @@ class ImageConverter:
     def changeFileTypes(self):
         print("Converting files to the " + self.fileFormat + " image format.")
         # Calling the `mogrify` command from ImageMagick (http://imagemagick.org/script/index.php) to convert the images.
-        callString = "mogrify -format " + self.fileFormat + " *.*"
-        system(callString)
+        for fileName in self.oldFilesList:
+            self.newFileName = fileName.replace(self.currentFileFormat, self.fileFormat)
+            callString = "magick convert " + fileName + " " + self.newFileName
+            system(callString)
+            
+
 
     def moveFiles(self):
         # Move unconverted files to the "old" folder.
